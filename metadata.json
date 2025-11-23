@@ -1,0 +1,7 @@
+{
+  "name": "Lumina Social",
+  "description": "Uma rede social moderna focada em estética visual e fotografia, com legendas alimentadas por IA.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
