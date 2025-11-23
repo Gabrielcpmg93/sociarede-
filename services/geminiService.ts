@@ -18,8 +18,9 @@ export const generateImageCaption = async (base64Image: string, mimeType: string
   if (!ai) return "Chave de API não configurada.";
 
   try {
+    // Using gemini-2.0-flash as it is more stable in this region/environment to avoid 404 errors
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.0-flash',
       contents: {
         parts: [
           {
@@ -38,6 +39,6 @@ export const generateImageCaption = async (base64Image: string, mimeType: string
     return response.text || "Não foi possível gerar a legenda.";
   } catch (error) {
     console.error("Erro ao gerar legenda:", error);
-    return "Erro ao conectar com a IA.";
+    return "Erro ao conectar com a IA. Tente novamente mais tarde.";
   }
 };
