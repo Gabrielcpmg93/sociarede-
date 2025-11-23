@@ -7,6 +7,11 @@
     <title>Lumina Social</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+      // Polyfill para process.env para evitar crash imediato no navegador
+      if (typeof process === 'undefined') {
+        window.process = { env: { API_KEY: '' } };
+      }
+      
       tailwind.config = {
         darkMode: 'class',
         theme: {
@@ -53,6 +58,7 @@
         color: #fff;
         overflow-x: hidden;
         margin: 0;
+        height: 100vh;
       }
       
       /* Modern Scrollbar */
@@ -96,6 +102,18 @@
         mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
         -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
       }
+
+      #error-display {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: #111;
+        color: #f87171;
+        z-index: 9999;
+        padding: 20px;
+        font-family: monospace;
+        white-space: pre-wrap;
+      }
     </style>
   <script type="importmap">
 {
@@ -104,15 +122,27 @@
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
     "@google/genai": "https://esm.sh/@google/genai@0.1.1",
     "lucide-react": "https://esm.sh/lucide-react@0.344.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/"
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
   }
 }
 </script>
 </head>
   <body>
     <div id="root"></div>
-    <!-- Script explícito para carregar a aplicação -->
+    <div id="error-display"></div>
+    
+    <script>
+      window.onerror = function(message, source, lineno, colno, error) {
+        const errorDisplay = document.getElementById('error-display');
+        if (errorDisplay) {
+          errorDisplay.style.display = 'block';
+          errorDisplay.textContent = `ERRO CRÍTICO:\n${message}\n\nFonte: ${source}:${lineno}`;
+          console.error(error);
+        }
+      };
+    </script>
+    
     <script type="module" src="./index.tsx"></script>
   </body>
 </html>

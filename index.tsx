@@ -5,17 +5,18 @@ import App from './App';
 const rootElement = document.getElementById('root');
 
 if (!rootElement) {
-  console.error("FATAL: Could not find root element to mount to");
-} else {
-  try {
-    const root = ReactDOM.createRoot(rootElement);
-    root.render(
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
-    );
-  } catch (error) {
-    console.error("FATAL: Error mounting React application", error);
-    rootElement.innerHTML = '<div style="color: white; padding: 20px;">Erro ao carregar aplicativo. Verifique o console.</div>';
-  }
+  throw new Error("Failed to find the root element");
+}
+
+const root = ReactDOM.createRoot(rootElement);
+
+try {
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+} catch (error) {
+  console.error("Error rendering app:", error);
+  document.body.innerHTML = `<div style="color:red; padding:20px;">Erro ao renderizar: ${error.message}</div>`;
 }
