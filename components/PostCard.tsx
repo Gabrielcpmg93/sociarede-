@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Share2, Bookmark, MoreHorizontal } from 'lucide-react';
+import { Heart, MessageCircle, Send, Bookmark, MoreVertical } from 'lucide-react';
 import { Post } from '../types';
 
 interface PostCardProps {
@@ -22,90 +22,92 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike }) => {
   };
 
   return (
-    <div className="relative mb-12 group">
-        {/* Glow Effect Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 rounded-3xl z-10 pointer-events-none" />
+    <div className="mb-10 px-2 sm:px-0 relative group">
       
-      {/* Blurred background for atmosphere */}
-      <div 
-        className="absolute -inset-0.5 bg-gradient-to-br from-primary/30 to-secondary/30 rounded-[2rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-      ></div>
-
-      <div className="relative bg-zinc-900/40 backdrop-blur-md border border-white/5 rounded-[2rem] overflow-hidden shadow-2xl">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 z-20 relative">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-secondary to-primary p-[2px]">
-                <img 
-                    src={post.user.avatarUrl} 
-                    alt={post.user.username} 
-                    className="w-full h-full rounded-full object-cover border-2 border-black"
-                />
-            </div>
+      <div className="relative rounded-[2.5rem] overflow-hidden bg-zinc-900 shadow-2xl border border-white/5">
+        
+        {/* Header - Floating inside image */}
+        <div className="absolute top-0 left-0 right-0 p-5 flex items-center justify-between z-20 bg-gradient-to-b from-black/60 to-transparent">
+          <div className="flex items-center space-x-3 backdrop-blur-md bg-black/20 px-3 py-1.5 rounded-full border border-white/10">
+            <img 
+                src={post.user.avatarUrl} 
+                alt={post.user.username} 
+                className="w-8 h-8 rounded-full object-cover ring-2 ring-white/20"
+            />
             <div>
-              <p className="text-sm font-semibold text-white leading-none">{post.user.username}</p>
-              <p className="text-xs text-zinc-400 mt-0.5">2h atrás</p>
+              <p className="text-sm font-bold text-white leading-none tracking-wide">{post.user.username}</p>
             </div>
           </div>
-          <button className="text-zinc-400 hover:text-white transition-colors">
-            <MoreHorizontal size={20} />
+          
+          <button className="text-white/80 hover:text-white p-2 backdrop-blur-sm rounded-full hover:bg-white/10 transition-colors">
+            <MoreVertical size={20} />
           </button>
         </div>
 
-        {/* Image */}
-        <div className="relative aspect-[4/5] w-full overflow-hidden bg-zinc-950" onDoubleClick={handleLike}>
+        {/* Main Image */}
+        <div className="relative aspect-[4/5] w-full bg-zinc-900" onDoubleClick={handleLike}>
           <img 
             src={post.imageUrl} 
             alt="Post content" 
             className="w-full h-full object-cover"
           />
           
-          {/* Heart Animation overlay */}
-          <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${isAnimatingLike ? 'opacity-100' : 'opacity-0'}`}>
-            <Heart size={100} className="text-white fill-white drop-shadow-lg scale-125" />
+          {/* Heart Animation */}
+          <div className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-all duration-300 ${isAnimatingLike ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
+            <div className="bg-white/10 backdrop-blur-xl p-6 rounded-full shadow-2xl">
+                <Heart size={80} className="text-secondary fill-secondary drop-shadow-lg" />
+            </div>
+          </div>
+
+          {/* Floating Action Bar (Vertical Pill) */}
+          <div className="absolute bottom-6 right-4 flex flex-col items-center gap-4 bg-black/40 backdrop-blur-xl border border-white/10 p-3 rounded-full z-20">
+            <button 
+                onClick={handleLike}
+                className="flex flex-col items-center gap-1 group/btn"
+            >
+                <div className={`p-2 rounded-full transition-all duration-300 ${liked ? 'bg-secondary/20' : 'hover:bg-white/10'}`}>
+                    <Heart 
+                        size={24} 
+                        className={`transition-colors duration-300 ${liked ? 'fill-secondary text-secondary' : 'text-white'}`} 
+                    />
+                </div>
+                <span className="text-[10px] font-bold text-white/90">{likeCount}</span>
+            </button>
+
+            <button className="flex flex-col items-center gap-1 group/btn">
+                <div className="p-2 rounded-full hover:bg-white/10 transition-all">
+                    <MessageCircle size={24} className="text-white" />
+                </div>
+                <span className="text-[10px] font-bold text-white/90">{post.comments.length}</span>
+            </button>
+
+            <button className="p-2 rounded-full hover:bg-white/10 transition-all">
+                <Send size={24} className="text-white" />
+            </button>
+
+            <div className="w-8 h-px bg-white/20 my-1"></div>
+
+            <button className="p-2 rounded-full hover:bg-white/10 transition-all">
+                <Bookmark size={22} className="text-white" />
+            </button>
           </div>
         </div>
 
-        {/* Actions Bar - Floating Style */}
-        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between z-30">
-            <div className="flex items-center space-x-2 bg-black/60 backdrop-blur-xl rounded-full px-4 py-2 border border-white/10">
-                <button 
-                    onClick={handleLike}
-                    className={`p-2 rounded-full transition-all ${liked ? 'text-secondary' : 'text-white hover:bg-white/10'}`}
-                >
-                    <Heart size={24} className={liked ? 'fill-current' : ''} />
-                </button>
-                <span className="text-sm font-medium mr-2">{likeCount}</span>
-                
-                <div className="w-px h-6 bg-white/10 mx-1"></div>
-
-                <button className="p-2 text-white hover:bg-white/10 rounded-full transition-colors">
-                    <MessageCircle size={24} />
-                </button>
-                
-                <button className="p-2 text-white hover:bg-white/10 rounded-full transition-colors">
-                    <Share2 size={24} />
-                </button>
+        {/* Caption Section (Clean, minimal bottom area) */}
+        <div className="p-5 pb-6 bg-zinc-900 relative">
+            {/* Subtle colored glow at bottom */}
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-primary/5 to-transparent pointer-events-none" />
+            
+            <div className="relative z-10">
+                <p className="text-zinc-300 text-sm leading-relaxed font-light">
+                    <span className="text-white font-semibold mr-2">{post.user.username}</span>
+                    {post.caption}
+                </p>
+                <p className="text-zinc-600 text-xs mt-3 uppercase tracking-wider font-medium">
+                    2 horas atrás
+                </p>
             </div>
-
-            <button className="p-3 bg-black/60 backdrop-blur-xl rounded-full border border-white/10 text-white hover:bg-white/10 transition-colors">
-                <Bookmark size={22} />
-            </button>
         </div>
-      </div>
-
-      {/* Caption & Comments (Outside card for cleaner look) */}
-      <div className="px-4 mt-4 space-y-2">
-        <p className="text-zinc-100 text-sm leading-relaxed">
-            <span className="font-semibold mr-2">{post.user.username}</span>
-            {post.caption}
-        </p>
-        
-        {post.comments.length > 0 && (
-            <button className="text-zinc-500 text-sm hover:text-zinc-300 transition-colors">
-                Ver todos os {post.comments.length} comentários
-            </button>
-        )}
       </div>
     </div>
   );
